@@ -1,0 +1,12 @@
+/node_modules
+/dist
+/build
+/coverage
+/logs
+/temp
+/.parcel-cache
+.env
+.env.local
+.env.development
+.env.test
+.env.production

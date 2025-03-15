@@ -1,0 +1,10 @@
+/* Remove default underlines on hover for all links */
+a:hover {
+  text-decoration: none !important;
+}
+
+/* Remove default focus outline and replace with a more subtle one */
+a:focus, button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.3);
+} 
