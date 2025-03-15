@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,6 +8,8 @@ import {
   RouterProvider,
   createRoutesFromElements,
   Outlet,
+  useLocation,
+  useNavigationType,
 } from "react-router-dom";
 import styled from "styled-components";
 import HomePage from "./pages/HomePage";
@@ -17,6 +19,7 @@ import SubmissionPage from "./pages/SubmissionPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { trackPageView, track } from "./utils/tracking";
 
 const AppContainer = styled.div`
   font-family: "Poppins", sans-serif;
@@ -40,11 +43,35 @@ const OccasionRoute: React.FC = () => {
     return <div>Occasion not found</div>;
   }
 
-  return <OccasionPage occasion={occasion} />;
+  return <OccasionPage />;
 };
 
 // Layout component that includes Header and Footer
 const Layout: React.FC = () => {
+  const location = useLocation();
+  const navigationType = useNavigationType();
+
+  // Track page views when the location changes
+  useEffect(() => {
+    // Only track page views on push navigation (not on replace or pop)
+    if (navigationType === "PUSH") {
+      const pageName =
+        location.pathname === "/" ? "home" : location.pathname.substring(1);
+      trackPageView(pageName, {
+        url: location.pathname,
+        search: location.search,
+      });
+    }
+
+    track("app_initialized", {
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      referrer: document.referrer,
+      screenSize: `${window.innerWidth}x${window.innerHeight}`,
+      language: navigator.language,
+    });
+  }, [location, navigationType]);
+
   return (
     <AppContainer>
       <Header />
@@ -75,6 +102,18 @@ const router = createBrowserRouter(
 );
 
 const App: React.FC = () => {
+  useEffect(() => {
+    // Log when the app initializes
+    console.log("App initialized");
+    track("app_initialized", {
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      referrer: document.referrer,
+      screenSize: `${window.innerWidth}x${window.innerHeight}`,
+      language: navigator.language,
+    });
+  }, []);
+
   return <RouterProvider router={router} />;
 };
 

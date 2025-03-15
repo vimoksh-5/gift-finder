@@ -7,6 +7,7 @@ import {
 } from "../utils/googleSheetsApi";
 import GiftGrid from "../components/GiftGrid";
 import { GiftIdea } from "../types";
+import { trackFilterChange, trackPageView } from "../utils/tracking";
 
 const PageHeader = styled.div`
   background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
@@ -103,11 +104,11 @@ const SortButton = styled(FilterButton)`
 type PriceFilterType = "all" | "under25" | "25to50" | "50to100" | "over100";
 
 interface OccasionPageParams {
-  occasion: string;
+  occasion?: string;
 }
 
 const OccasionPage: React.FC = () => {
-  const { occasion } = useParams<OccasionPageParams>();
+  const { occasion } = useParams<{ occasion?: string }>();
   const [gifts, setGifts] = useState<GiftIdea[]>([]);
   const [recipients, setRecipients] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -119,6 +120,11 @@ const OccasionPage: React.FC = () => {
   const occasionName = occasion?.replace(/-/g, " ") || "";
 
   useEffect(() => {
+    // Track page view when occasion page loads
+    if (occasionName) {
+      trackPageView(`occasion/${occasion}`);
+    }
+
     const fetchData = async (): Promise<void> => {
       try {
         setLoading(true);
@@ -141,7 +147,7 @@ const OccasionPage: React.FC = () => {
     if (occasionName) {
       fetchData();
     }
-  }, [occasionName]);
+  }, [occasionName, occasion]);
 
   // Filter and sort gifts
   const getFilteredGifts = () => {
@@ -197,6 +203,25 @@ const OccasionPage: React.FC = () => {
     return filtered;
   };
 
+  // Handle price filter change
+  const handlePriceFilterChange = (newFilter: PriceFilterType) => {
+    setPriceFilter(newFilter);
+    trackFilterChange("price_range", newFilter);
+  };
+
+  // Handle recipient filter change
+  const handleRecipientChange = (recipient: string) => {
+    setSelectedRecipient(recipient);
+    trackFilterChange("recipient", recipient);
+  };
+
+  // Handle sort change
+  const handleSortChange = () => {
+    const newSortValue = !sortByRating;
+    setSortByRating(newSortValue);
+    trackFilterChange("sort_by_rating", newSortValue ? "enabled" : "disabled");
+  };
+
   if (!occasionName) {
     return <div>Occasion not found</div>;
   }
@@ -219,31 +244,31 @@ const OccasionPage: React.FC = () => {
           <FilterOptions>
             <FilterButton
               active={priceFilter === "all"}
-              onClick={() => setPriceFilter("all")}
+              onClick={() => handlePriceFilterChange("all")}
             >
               All Prices
             </FilterButton>
             <FilterButton
               active={priceFilter === "under25"}
-              onClick={() => setPriceFilter("under25")}
+              onClick={() => handlePriceFilterChange("under25")}
             >
               Under $25
             </FilterButton>
             <FilterButton
               active={priceFilter === "25to50"}
-              onClick={() => setPriceFilter("25to50")}
+              onClick={() => handlePriceFilterChange("25to50")}
             >
               $25 - $50
             </FilterButton>
             <FilterButton
               active={priceFilter === "50to100"}
-              onClick={() => setPriceFilter("50to100")}
+              onClick={() => handlePriceFilterChange("50to100")}
             >
               $50 - $100
             </FilterButton>
             <FilterButton
               active={priceFilter === "over100"}
-              onClick={() => setPriceFilter("over100")}
+              onClick={() => handlePriceFilterChange("over100")}
             >
               Over $100
             </FilterButton>
@@ -255,7 +280,7 @@ const OccasionPage: React.FC = () => {
           <FilterOptions>
             <FilterButton
               active={selectedRecipient === "all"}
-              onClick={() => setSelectedRecipient("all")}
+              onClick={() => handleRecipientChange("all")}
             >
               All Recipients
             </FilterButton>
@@ -263,7 +288,7 @@ const OccasionPage: React.FC = () => {
               <FilterButton
                 key={index}
                 active={selectedRecipient === recipient}
-                onClick={() => setSelectedRecipient(recipient)}
+                onClick={() => handleRecipientChange(recipient)}
               >
                 {recipient}
               </FilterButton>
@@ -274,10 +299,7 @@ const OccasionPage: React.FC = () => {
         <RecipientFilter>
           <FilterTitle>Sort Options</FilterTitle>
           <FilterOptions>
-            <SortButton
-              active={sortByRating}
-              onClick={() => setSortByRating(!sortByRating)}
-            >
+            <SortButton active={sortByRating} onClick={handleSortChange}>
               {sortByRating ? "★ Rating (High to Low)" : "Sort by Rating"}
             </SortButton>
           </FilterOptions>

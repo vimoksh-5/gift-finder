@@ -11,6 +11,7 @@ import OccasionCard from "../components/OccasionCard";
 import GiftGrid from "../components/GiftGrid";
 import GoogleFormEmbed from "../components/GoogleFormEmbed";
 import { GiftIdea } from "../types";
+import { trackSearch, trackFilterChange } from "../utils/tracking";
 
 const HeroSection = styled.section`
   background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
@@ -338,12 +339,43 @@ const HomePage: React.FC<HomePageProps> = () => {
   // Handle search input
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // The search query is already set via the input onChange
+    // Track search query
+    if (searchQuery) {
+      trackSearch(searchQuery);
+    }
   };
 
   // Handle sort selection
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortOption(e.target.value);
+    const newSortOption = e.target.value;
+    setSortOption(newSortOption);
+    trackFilterChange("sort", newSortOption || "default");
+  };
+
+  // Handle occasion filter change
+  const handleOccasionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newOccasion = e.target.value;
+    setSelectedOccasion(newOccasion);
+    trackFilterChange("occasion", newOccasion || "all");
+  };
+
+  // Handle recipient filter change
+  const handleRecipientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRecipient = e.target.value;
+    setSelectedRecipient(newRecipient);
+    trackFilterChange("recipient", newRecipient || "all");
+  };
+
+  // Handle price range filter change
+  const handlePriceRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newPriceRange = e.target.value;
+    setSelectedPriceRange(newPriceRange);
+    trackFilterChange("price_range", newPriceRange || "all");
+  };
+
+  // Handle search input change
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -361,7 +393,7 @@ const HomePage: React.FC<HomePageProps> = () => {
                 type="text"
                 placeholder="Search for gifts..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchInputChange}
               />
               <button type="submit">Search</button>
             </SearchBar>
@@ -384,7 +416,7 @@ const HomePage: React.FC<HomePageProps> = () => {
               <FilterSelect
                 id="occasion-filter"
                 value={selectedOccasion}
-                onChange={(e) => setSelectedOccasion(e.target.value)}
+                onChange={handleOccasionChange}
               >
                 <option value="">All Occasions</option>
                 {occasions.map((occasion, index) => (
@@ -400,7 +432,7 @@ const HomePage: React.FC<HomePageProps> = () => {
               <FilterSelect
                 id="recipient-filter"
                 value={selectedRecipient}
-                onChange={(e) => setSelectedRecipient(e.target.value)}
+                onChange={handleRecipientChange}
               >
                 <option value="">All Recipients</option>
                 {recipients.map((recipient, index) => (
@@ -416,7 +448,7 @@ const HomePage: React.FC<HomePageProps> = () => {
               <FilterSelect
                 id="price-filter"
                 value={selectedPriceRange}
-                onChange={(e) => setSelectedPriceRange(e.target.value)}
+                onChange={handlePriceRangeChange}
               >
                 <option value="">All Prices</option>
                 {priceRanges.map((price, index) => (

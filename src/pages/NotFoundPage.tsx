@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { trackPageView, trackButtonClick } from "../utils/tracking";
 
 const Container = styled.div`
   display: flex;
@@ -51,6 +52,21 @@ interface NotFoundPageProps {
 }
 
 const NotFoundPage: React.FC<NotFoundPageProps> = () => {
+  useEffect(() => {
+    // Track page view when 404 page loads
+    trackPageView("404_not_found", {
+      url: window.location.pathname,
+      referrer: document.referrer,
+    });
+  }, []);
+
+  // Handle home button click
+  const handleHomeButtonClick = () => {
+    trackButtonClick("back_to_home_from_404", {
+      from_url: window.location.pathname,
+    });
+  };
+
   return (
     <Container>
       <ErrorCode>404</ErrorCode>
@@ -59,7 +75,9 @@ const NotFoundPage: React.FC<NotFoundPageProps> = () => {
         Oops! The page you're looking for doesn't exist or has been moved. Let's
         get you back to finding the perfect gift.
       </Text>
-      <HomeButton to="/">Back to Home</HomeButton>
+      <HomeButton to="/" onClick={handleHomeButtonClick}>
+        Back to Home
+      </HomeButton>
     </Container>
   );
 };

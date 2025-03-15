@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { GiftIdea } from "../types";
+import { trackButtonClick, trackGiftCardClick } from "../utils/tracking";
 
 const Card = styled.div`
   background-color: white;
@@ -115,6 +116,36 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift }) => {
     img.src = `https://em-content.zobj.net/source/apple/354/wrapped-gift_1f381.png`;
   };
 
+  // Track purchase button click
+  const handlePurchaseClick = () => {
+    trackButtonClick("purchase", {
+      gift_id: gift.id,
+      gift_name: gift.name,
+      gift_price: gift.price,
+      gift_category: gift.category,
+    });
+  };
+
+  // Track search button click
+  const handleSearchClick = () => {
+    trackButtonClick("search", {
+      gift_id: gift.id,
+      gift_name: gift.name,
+      search_query: gift.search_query,
+    });
+  };
+
+  // Track card click
+  const handleCardClick = () => {
+    trackGiftCardClick(gift.name, {
+      gift_id: gift.id,
+      gift_price: gift.price,
+      gift_category: gift.category,
+      gift_occasion: gift.occasion,
+      gift_recipient: gift.recipient,
+    });
+  };
+
   // Render stars for rating
   const renderRating = () => {
     if (!gift.rating) return null;
@@ -148,7 +179,7 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift }) => {
   };
 
   return (
-    <Card>
+    <Card onClick={handleCardClick}>
       <Image src={gift.image_url} alt={gift.name} onError={handleImageError} />
       <Title>{gift.name}</Title>
       <Description>{gift.description}</Description>
@@ -178,6 +209,10 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift }) => {
             href={gift.purchase_link}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent card click event
+              handlePurchaseClick();
+            }}
           >
             Purchase
           </LinkButton>
@@ -186,6 +221,10 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift }) => {
           href={gift.search_query}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent card click event
+            handleSearchClick();
+          }}
         >
           Search Google
         </SearchButton>

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { trackPageView, trackButtonClick } from "../utils/tracking";
 
 const PageHeader = styled.div`
   background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
@@ -89,6 +90,19 @@ interface AboutPageProps {
 }
 
 const AboutPage: React.FC<AboutPageProps> = () => {
+  useEffect(() => {
+    // Track page view when about page loads
+    trackPageView("about");
+  }, []);
+
+  // Handle submit button click
+  const handleSubmitButtonClick = () => {
+    trackButtonClick("submit_gift_idea_from_about", {
+      location: "about_page",
+      section: "share_your_gift_ideas",
+    });
+  };
+
   return (
     <div>
       <PageHeader>
@@ -155,7 +169,9 @@ const AboutPage: React.FC<AboutPageProps> = () => {
               We'd love to hear about your favorite gift ideas! Your suggestions
               will help others find the perfect gifts for their loved ones.
             </p>
-            <SubmitButton to="/submission">Submit Your Gift Idea</SubmitButton>
+            <SubmitButton to="/submission" onClick={handleSubmitButtonClick}>
+              Submit Your Gift Idea
+            </SubmitButton>
           </SubmitSection>
         </Section>
 
