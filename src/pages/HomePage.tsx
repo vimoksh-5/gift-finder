@@ -458,7 +458,7 @@ const HomePage: React.FC<HomePageProps> = () => {
               <OccasionCard key={index} occasion={occasion} />
             ))
           ) : (
-            <p>No occasions found. Please check your Google Sheet data.</p>
+            <p>No occasions found.</p>
           )}
         </OccasionsGrid>
       </Section>

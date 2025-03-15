@@ -22,6 +22,7 @@ A web application that helps users find gift ideas for various occasions. The ap
 - **Data Storage**: Google Sheets API
 - **Form Submissions**: Google Forms
 - **Build Tool**: Parcel
+- **Environment Variables**: Parcel's built-in support for .env files
 
 ## Recent Updates
 
@@ -32,6 +33,7 @@ A web application that helps users find gift ideas for various occasions. The ap
 - Removed default underlines on hover for better UI
 - Enhanced error handling and user feedback
 - Improved mobile responsiveness
+- Implemented environment variables for sensitive information
 
 ## Setup Instructions
 
@@ -104,20 +106,39 @@ npm install
 
 ### Step 6: Configure the application
 
-1. Open `src/utils/googleSheetsApi.ts` and update:
+1. Create a `.env` file in the root directory with the following variables (use `.env.example` as a template):
 
-   - `SHEET_ID` with your Google Sheet ID
-   - `API_KEY` with your Google API key
-   - Update the sheet name if needed (e.g., `Form responses 1`)
+   ```
+   REACT_APP_GOOGLE_SHEETS_API_KEY=your_api_key_here
+   REACT_APP_GOOGLE_SHEETS_ID=your_sheet_id_here
+   REACT_APP_GOOGLE_SHEETS_NAME=abc
+   REACT_APP_GOOGLE_FORM_URL=your_google_form_embed_url_here
+   ```
 
-2. Open `src/pages/SubmissionPage.tsx` and update:
-   - `formUrl` with your Google Form URL
+   Replace the placeholder values with your actual API key, Sheet ID, and Form URL.
+
+2. For production, you can create a `.env.production` file with the same variables but with production values.
+
+> **SECURITY NOTE**: Never commit your `.env` files containing actual API keys or sensitive information to version control. The `.env` files are already added to `.gitignore` to prevent accidental commits. Only commit the `.env.example` file with placeholder values.
 
 ### Step 7: Run the application
+
+For development:
 
 ```bash
 npm run dev
 ```
+
+For production build:
+
+```bash
+npm run build
+```
+
+The application automatically detects the environment (development or production) and loads the appropriate environment variables:
+
+- Development mode uses variables from `.env` or `.env.development`
+- Production mode uses variables from `.env.production`
 
 The application should now be running at http://localhost:1234
 

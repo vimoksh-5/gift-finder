@@ -1,5 +1,5 @@
 {
-    "spreadsheetId": "1BSppHEh8WOLieoHbPM2WFRWTJnoFqum7lsAB5Uzmjdo",
+    "spreadsheetId": "abc",
     "properties": {
         "title": "Gifting responses",
         "locale": "en_GB",
@@ -135,7 +135,7 @@
         {
             "properties": {
                 "sheetId": 1485588215,
-                "title": "Form responses 1",
+                "title": "abc",
                 "index": 0,
                 "sheetType": "GRID",
                 "gridProperties": {
@@ -5514,5 +5514,5 @@
             ]
         }
     ],
-    "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1BSppHEh8WOLieoHbPM2WFRWTJnoFqum7lsAB5Uzmjdo/edit"
+    "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/abc/edit"
 }
