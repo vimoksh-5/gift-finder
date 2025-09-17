@@ -2,7 +2,8 @@
 
 A web application that helps users find gift ideas for various occasions. The application uses Google Sheets as a backend database and integrates with Google Forms for user submissions.
 
-![GiftFinder Screenshot](https://source.unsplash.com/800x400/?gift)
+<img width="533" height="718" alt="image" src="https://github.com/user-attachments/assets/d707b304-bbc2-494f-9a7c-3a47cbb6dccb" />
+
 
 ## Features
 
